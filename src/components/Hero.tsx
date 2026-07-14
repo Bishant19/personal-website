@@ -1,4 +1,5 @@
 import { socialLinks } from "../data/portfolio";
+import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
@@ -35,18 +36,24 @@ export default function Hero() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <a
+            <motion.a
+             whileHover={{ scale: 1.05 }}
+             whileTap={{ scale: 0.95 }}
+             transition={{ type: "spring", stiffness: 300, damping: 20 }}
               href="#projects"
-              className="rounded-full bg-violet-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-transform hover:scale-105 hover:bg-violet-500"
+              className="rounded-full bg-violet-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/30"
             >
               View my work
-            </a>
-            <a
+            </motion.a>
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
               href="#contact"
               className="rounded-full border border-white/15 px-7 py-3 text-sm font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/5"
             >
               Get in touch
-            </a>
+            </motion.a>
           </div>
 
           <div className="mt-12 flex items-center gap-6">
