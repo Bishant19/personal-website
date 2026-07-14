@@ -7,7 +7,6 @@ export default function Services() {
     "Graphics Designing",
     "Visual Effects / VFX"
   ];
-
   return (
     <section
     id="Services"
@@ -27,9 +26,11 @@ export default function Services() {
             </span>
           </h2>
 
-          <button className="border border-gray-500 px-6 py-3 rounded-full hover:border-purple-500 hover:text-purple-400 transition duration-300">
-            Learn More
-          </button>
+          <a href="/offerings" target="_blank" rel="noopener noreferrer">
+            <button className="border border-gray-500 px-6 py-3 rounded-full hover:border-purple-500 hover:text-purple-400 transition duration-300">
+              Learn More
+            </button>
+          </a>
         </div>
 
         {/* RIGHT SIDE */}
