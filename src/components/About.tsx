@@ -14,30 +14,28 @@ export default function About() {
             About me
           </span>
           <h2 className="mt-3 font-display text-3xl font-bold text-white sm:text-4xl">
-            Designing and building products with purpose
+            Designing visual experiences that tell meaningful stories
           </h2>
         </div>
 
         <div className="grid grid-cols-1 gap-14 lg:grid-cols-2">
           <div className="space-y-5 text-slate-400">
             <p>
-              I'm a graphics designer and full-stack developer based in San
-              Francisco, with a passion for turning complex problems into
-              simple, elegant interfaces. Over the past five years I've
-              worked with startups and established companies to design and
-              ship products that people genuinely enjoy using.
+              I'm a Multimedia Artist with over 6 years of experiences in
+              video editing, visual design and digital content creation. I  
+              specialize in crafting visually compelling narratives that connect
+              brands with their audiences.
             </p>
             <p>
-              My approach blends strategic thinking with hands-on craft — I
-              like to be involved from early research and wireframes all the
-              way through to writing production code. That end-to-end
-              perspective helps me build things that are not just beautiful,
-              but also technically sound and maintainable.
+              My approach blends creativity, strategy, and technical execution 
+              — Whether it's a dynamic social media reel, a cinematic edit, logo
+              design & animation, or branded digital content, my goal is simple:
+              create work that resonates and inspires.
             </p>
             <p>
-              When I'm not designing or coding, you'll find me hiking,
-              experimenting with film photography, or mentoring aspiring
-              designers in my community.
+              I ensure every project meets both aesthetic and performance goals.
+              I don’t just create content — I craft experiences that engage, inspire, 
+              and deliver results.
             </p>
           </div>
 
