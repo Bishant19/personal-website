@@ -6,8 +6,8 @@ const links = [
   { href: "#Services", label: "Services" },
   { href: "#skills", label: "Skills" },
   { href: "#projects", label: "Projects" },
-  { href: "#experience", label: "Experience" },  
-  { href: "#contact", label: "Contact" },  
+  { href: "#experience", label: "Experience" },
+  { href: "#portfolio-teaser", label: "Portfolio" },
 ];
 
 export default function Navbar() {
@@ -30,10 +30,7 @@ export default function Navbar() {
       )}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a
-          href="#home"
-          className="font-display text-lg font-semibold tracking-tight text-white"
-        >
+        <a href="#home" className="font-display text-lg font-semibold tracking-tight text-white">
           Bishant<span className="text-violet-400">.</span> RB
         </a>
 
@@ -60,13 +57,7 @@ export default function Navbar() {
           className="flex h-10 w-10 items-center justify-center rounded-lg text-white md:hidden"
           aria-label="Toggle menu"
         >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             {open ? (
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             ) : (
