@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function PortfolioTeaser() {
   return (
-    <section id="portfolio-teaser" className="relative py-24 px-6">
+    <section id="portfolio-teaser" className="relative pt-24 pb-8 px-6">
       <div className="mx-auto max-w-[68rem]">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
