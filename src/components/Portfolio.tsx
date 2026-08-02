@@ -217,7 +217,7 @@ export default function Portfolio() {
           transition={{ duration: 0.8, delay: 0.1 }}
           className="mt-16 border-t border-white/10 pt-8 text-center text-sm text-white/40"
         >
-          Crafted with React, Tailwind CSS &amp; Framer Motion.
+          © 2026 Bishant Rajbhandari. All rights reserved.
         </motion.footer>
       </div>
     </div>
