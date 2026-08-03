@@ -1,19 +1,33 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BeforeAfterSlider from "./BeforeAfterSlider";
+import BeforeAfterVideoSlider from "./BeforeAfterVideoSlider";
 
-interface Project {
+interface BaseProject {
   id: string;
   title: string;
   description: string;
   category: string;
-  beforeImage: string;
-  afterImage: string;
   featured?: boolean;
 }
 
+interface ImageProject extends BaseProject {
+  type: "image";
+  beforeImage: string;
+  afterImage: string;
+}
+
+interface VideoProject extends BaseProject {
+  type: "video";
+  beforeVideo: string;
+  afterVideo: string;
+}
+
+type Project = ImageProject | VideoProject;
+
 const categories = [
   "All",
+  "VFX / Compositing",
   "Interior Design",
   "Landscaping",
   "Automotive",
@@ -23,17 +37,38 @@ const categories = [
 
 const projects: Project[] = [
   {
+    id: "vfx-object-removal-1",
+    type: "video",
+    title: "Object Removal & Clean Plate",
+    description:
+      "Seamlessly removed a person from the background using rotoscoping and clean plate reconstruction — no trace left behind.",
+    category: "VFX / Compositing",
+    beforeVideo: "/video/vfx/vfx-1-before.mp4",
+    afterVideo: "/video/vfx/vfx-1-after.mp4",
+  },
+  {
+    id: "vfx-greenscreen-2",
+    type: "video",
+    title: "Complex Green Screen Removal",
+    description:
+      "Challenging keying work with fine detail preservation — clean composite pulled from difficult green screen footage.",
+    category: "VFX / Compositing",
+    beforeVideo: "/video/vfx/vfx-2-before.mp4",
+    afterVideo: "/video/vfx/vfx-2-after.mp4",
+  },
+  {
     id: "living-room",
+    type: "image",
     title: "Modern Living Room Revamp",
     description:
       "A tired, cluttered living space reimagined with warm ambient lighting, tailored furniture, and a refined material palette.",
     category: "Interior Design",
     beforeImage: "/images/room-before.jpg",
     afterImage: "/images/room-after.jpg",
-    featured: true,
   },
   {
     id: "garden",
+    type: "image",
     title: "Backyard Landscape Design",
     description:
       "An overgrown, neglected yard transformed into a lush, manicured retreat with stone pathways and vibrant planting.",
@@ -43,6 +78,7 @@ const projects: Project[] = [
   },
   {
     id: "detailing",
+    type: "image",
     title: "Full Exterior Detailing",
     description:
       "Years of grime and dull paintwork corrected into a showroom-grade, mirror-like finish under studio lighting.",
@@ -52,6 +88,7 @@ const projects: Project[] = [
   },
   {
     id: "poster",
+    type: "image",
     title: "Event Poster Identity",
     description:
       "A flat, uninspired flyer draft rebuilt into a bold, colorful print piece with confident modern typography.",
@@ -61,6 +98,7 @@ const projects: Project[] = [
   },
   {
     id: "sneaker",
+    type: "image",
     title: "Product Render Finalization",
     description:
       "An untextured clay wireframe pushed to a photoreal, studio-lit render with true-to-life materials and reflections.",
@@ -168,21 +206,28 @@ export default function Portfolio() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.5, ease: "easeOut", delay: i * 0.06 }}
-                className={`rounded-[2rem] border border-white/10 bg-white/[0.03] p-4 shadow-2xl shadow-black/40 backdrop-blur-xl transition-colors hover:border-violet-400/30 sm:p-5 ${
-                  project.featured ? "md:col-span-2 xl:col-span-2" : ""
-                }`}
+                className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-4 shadow-2xl shadow-black/40 backdrop-blur-xl transition-colors hover:border-violet-400/30 sm:p-5"
               >
                 <div className="mb-3 flex items-center justify-between px-1">
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-white/50">
                     {project.category}
                   </span>
                 </div>
-                <BeforeAfterSlider
-                  beforeImage={project.beforeImage}
-                  afterImage={project.afterImage}
-                  title={project.title}
-                  description={project.description}
-                />
+                {project.type === "video" ? (
+                  <BeforeAfterVideoSlider
+                    beforeVideo={project.beforeVideo}
+                    afterVideo={project.afterVideo}
+                    title={project.title}
+                    description={project.description}
+                  />
+                ) : (
+                  <BeforeAfterSlider
+                    beforeImage={project.beforeImage}
+                    afterImage={project.afterImage}
+                    title={project.title}
+                    description={project.description}
+                  />
+                )}
               </motion.div>
             ))}
           </AnimatePresence>

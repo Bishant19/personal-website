@@ -2,9 +2,9 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, animate } from "framer-motion";
 import { cn } from "../utils/cn";
 
-export interface BeforeAfterSliderProps {
-  beforeImage: string;
-  afterImage: string;
+export interface BeforeAfterVideoSliderProps {
+  beforeVideo: string;
+  afterVideo: string;
   title?: string;
   description?: string;
   beforeLabel?: string;
@@ -14,18 +14,22 @@ export interface BeforeAfterSliderProps {
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
-export default function BeforeAfterSlider({
-  beforeImage,
-  afterImage,
+export default function BeforeAfterVideoSlider({
+  beforeVideo,
+  afterVideo,
   title,
   description,
   beforeLabel = "Before",
   afterLabel = "After",
   className,
-}: BeforeAfterSliderProps) {
+}: BeforeAfterVideoSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const beforeVideoRef = useRef<HTMLVideoElement>(null);
+  const afterVideoRef = useRef<HTMLVideoElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isVertical, setIsVertical] = useState(false);
   const sliderId = useId();
 
   const position = useMotionValue(50);
@@ -37,9 +41,60 @@ export default function BeforeAfterSlider({
   const [displayValue, setDisplayValue] = useState(50);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = springPosition.on("change", (v) => setDisplayValue(v));
     return unsubscribe;
   }, [springPosition]);
+
+  const playVideos = useCallback(() => {
+    const before = beforeVideoRef.current;
+    const after = afterVideoRef.current;
+    if (!before || !after) return;
+    after.currentTime = before.currentTime;
+    before.play().catch(() => {});
+    after.play().catch(() => {});
+  }, []);
+
+  const pauseVideos = useCallback(() => {
+    beforeVideoRef.current?.pause();
+    afterVideoRef.current?.pause();
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          playVideos();
+        } else {
+          pauseVideos();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isMobile, playVideos, pauseVideos]);
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+    if (!isMobile) playVideos();
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    if (!isMobile) pauseVideos();
+  };
 
   const updateFromClientX = useCallback(
     (clientX: number) => {
@@ -95,16 +150,22 @@ export default function BeforeAfterSlider({
     }
   };
 
+  const handleLoadedMetadata = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const video = e.currentTarget;
+    const ratio = video.videoWidth / video.videoHeight;
+    setIsVertical(ratio <= 1.1);
+  };
+
   return (
     <div className={cn("group w-full", className)}>
       <div
         ref={containerRef}
         role="slider"
-        aria-label={title ? `Before and after comparison: ${title}` : "Before and after image comparison"}
+        aria-label={title ? `Before and after comparison: ${title}` : "Before and after video comparison"}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(displayValue)}
-        aria-valuetext={`${Math.round(displayValue)}% after image revealed`}
+        aria-valuetext={`${Math.round(displayValue)}% after video revealed`}
         tabIndex={0}
         id={sliderId}
         onPointerDown={handlePointerDown}
@@ -112,38 +173,60 @@ export default function BeforeAfterSlider({
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onKeyDown={handleKeyDown}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         className={cn(
           "relative aspect-[4/3] w-full touch-none select-none overflow-hidden rounded-3xl",
-          "border border-white/10 bg-black/20 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]",
+          "border border-white/10 bg-black shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]",
           "outline-none ring-0 focus-visible:ring-2 focus-visible:ring-violet-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050308]",
           "cursor-ew-resize"
         )}
       >
-        {/* Before image (base layer) */}
-        <img
-          src={beforeImage}
-          alt={title ? `${title} — before` : "Before"}
-          draggable={false}
-          className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
+        {/* Before video (base layer) */}
+        <video
+          ref={beforeVideoRef}
+          src={beforeVideo}
+          muted
+          loop
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          onLoadedMetadata={handleLoadedMetadata}
+          className={cn(
+            "pointer-events-none absolute inset-0 h-full w-full select-none",
+            isVertical ? "object-contain" : "object-cover"
+          )}
         />
 
-        {/* After image, clipped */}
+        {/* After video, clipped */}
         <div
           className="pointer-events-none absolute inset-0 h-full w-full overflow-hidden"
           style={{ clipPath: `inset(0 ${100 - displayValue}% 0 0)` }}
         >
-          <img
-            src={afterImage}
-            alt={title ? `${title} — after` : "After"}
-            draggable={false}
-            className="pointer-events-none h-full w-full select-none object-cover"
+          <video
+            ref={afterVideoRef}
+            src={afterVideo}
+            muted
+            loop
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            className={cn(
+              "pointer-events-none h-full w-full select-none",
+              isVertical ? "object-contain" : "object-cover"
+            )}
           />
         </div>
 
         {/* Top gradient overlay */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
+
+        {/* Play indicator (desktop hint) */}
+        {!isMobile && !isHovering && (
+          <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-white/70 backdrop-blur-md">
+            Hover to play
+          </div>
+        )}
 
         {/* Labels */}
         <div
