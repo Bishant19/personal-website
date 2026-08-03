@@ -29,7 +29,6 @@ export default function BeforeAfterVideoSlider({
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isVertical, setIsVertical] = useState(false);
   const sliderId = useId();
 
   const position = useMotionValue(50);
@@ -40,6 +39,7 @@ export default function BeforeAfterVideoSlider({
   });
   const [displayValue, setDisplayValue] = useState(50);
 
+  // Detect mobile
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -52,6 +52,7 @@ export default function BeforeAfterVideoSlider({
     return unsubscribe;
   }, [springPosition]);
 
+  // Play both videos synced
   const playVideos = useCallback(() => {
     const before = beforeVideoRef.current;
     const after = afterVideoRef.current;
@@ -66,6 +67,7 @@ export default function BeforeAfterVideoSlider({
     afterVideoRef.current?.pause();
   }, []);
 
+  // Mobile: autoplay when in viewport
   useEffect(() => {
     if (!isMobile) return;
     const el = containerRef.current;
@@ -150,12 +152,6 @@ export default function BeforeAfterVideoSlider({
     }
   };
 
-  const handleLoadedMetadata = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    const video = e.currentTarget;
-    const ratio = video.videoWidth / video.videoHeight;
-    setIsVertical(ratio <= 1.1);
-  };
-
   return (
     <div className={cn("group w-full", className)}>
       <div
@@ -177,7 +173,7 @@ export default function BeforeAfterVideoSlider({
         onMouseLeave={handleMouseLeave}
         className={cn(
           "relative aspect-[4/3] w-full touch-none select-none overflow-hidden rounded-3xl",
-          "border border-white/10 bg-black shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]",
+          "border border-white/10 bg-black/20 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]",
           "outline-none ring-0 focus-visible:ring-2 focus-visible:ring-violet-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050308]",
           "cursor-ew-resize"
         )}
@@ -189,13 +185,8 @@ export default function BeforeAfterVideoSlider({
           muted
           loop
           playsInline
-          preload="auto"
-          disablePictureInPicture
-          onLoadedMetadata={handleLoadedMetadata}
-          className={cn(
-            "pointer-events-none absolute inset-0 h-full w-full select-none",
-            isVertical ? "object-contain" : "object-cover"
-          )}
+          preload="metadata"
+          className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
         />
 
         {/* After video, clipped */}
@@ -209,12 +200,8 @@ export default function BeforeAfterVideoSlider({
             muted
             loop
             playsInline
-            preload="auto"
-            disablePictureInPicture
-            className={cn(
-              "pointer-events-none h-full w-full select-none",
-              isVertical ? "object-contain" : "object-cover"
-            )}
+            preload="metadata"
+            className="pointer-events-none h-full w-full select-none object-cover"
           />
         </div>
 
