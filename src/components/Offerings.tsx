@@ -1,6 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  MdMovie,
+  MdAutoAwesome,
+  MdViewInAr,
+  MdBolt,
+  MdPalette,
+  MdAutoFixHigh,
+  MdStar,
+  MdCheck,
+  MdClose,
+  MdArrowBack,
+  MdArrowForward,
+} from "react-icons/md";
 import "./Offerings.css";
 
 interface Tier {
@@ -16,14 +29,15 @@ interface Tier {
 
 interface Service {
   name: string;
-  icon: string;
+  icon: React.ReactNode;
   tagline: string;
   tiers: { [key: string]: Tier };
 }
 
 const servicesData: { [key: string]: Service } = {
   video: {
-    name: "Video Editing", icon: "🎬",
+    name: "Video Editing",
+    icon: <MdMovie size={32} />,
     tagline: "Professional cuts, color grading & sound design for YouTube, ads and socials.",
     tiers: {
       basic: { label: "Basic", desc: "Simple cuts for short clips", onetime: 49, monthly: 149, delivery: "2 days", revisions: "1 revision", features: ["Up to 3 min final video", "Basic color correction", "Background music", "1080p export", "Simple text overlays"] },
@@ -32,7 +46,8 @@ const servicesData: { [key: string]: Service } = {
     }
   },
   motion: {
-    name: "Motion Design", icon: "🌀",
+    name: "Motion Design",
+    icon: <MdAutoAwesome size={32} />,
     tagline: "Eye-catching motion graphics for social media, explainer videos & branding.",
     tiers: {
       basic: { label: "Basic", desc: "Simple animated graphic", onetime: 59, monthly: 169, delivery: "2 days", revisions: "1 revision", features: ["1 animated scene", "Basic shape animation", "Royalty-free music", "1080p export"] },
@@ -41,7 +56,8 @@ const servicesData: { [key: string]: Service } = {
     }
   },
   threed: {
-    name: "3D Product Modeling", icon: "🧊",
+    name: "3D Product Modeling",
+    icon: <MdViewInAr size={32} />,
     tagline: "Photo-realistic 3D models & renders for e-commerce, ads and prototypes.",
     tiers: {
       basic: { label: "Basic", desc: "Single product model", onetime: 79, monthly: 219, delivery: "3 days", revisions: "1 revision", features: ["1 product model", "Basic texturing", "3 static renders", "Standard lighting"] },
@@ -50,7 +66,8 @@ const servicesData: { [key: string]: Service } = {
     }
   },
   logo: {
-    name: "Logo Animations", icon: "⚡",
+    name: "Logo Animations",
+    icon: <MdBolt size={32} />,
     tagline: "Bring your brand identity to life with a dynamic animated logo reveal.",
     tiers: {
       basic: { label: "Basic", desc: "Simple fade/scale reveal", onetime: 39, monthly: 119, delivery: "1 day", revisions: "1 revision", features: ["2D logo animation", "Simple transitions", "5 sec duration", "1080p export"] },
@@ -59,7 +76,8 @@ const servicesData: { [key: string]: Service } = {
     }
   },
   graphic: {
-    name: "Graphic Designing", icon: "🎨",
+    name: "Graphic Designing",
+    icon: <MdPalette size={32} />,
     tagline: "Branding, social media kits, posters and print-ready designs.",
     tiers: {
       basic: { label: "Basic", desc: "Single design asset", onetime: 29, monthly: 89, delivery: "1 day", revisions: "2 revisions", features: ["1 custom design", "Source file (PSD/AI)", "High-res export", "Basic concept"] },
@@ -68,7 +86,8 @@ const servicesData: { [key: string]: Service } = {
     }
   },
   vfx: {
-    name: "Visual Effects (VFX)", icon: "🌌",
+    name: "Visual Effects (VFX)",
+    icon: <MdAutoFixHigh size={32} />,
     tagline: "Cinematic compositing, green screen and special effects for film & ads.",
     tiers: {
       basic: { label: "Basic", desc: "Simple compositing", onetime: 89, monthly: 249, delivery: "3 days", revisions: "1 revision", features: ["Green screen removal", "Basic compositing", "1 effect shot", "1080p export"] },
@@ -84,7 +103,6 @@ function formatPrice(n: number) {
   return "$" + n.toLocaleString();
 }
 
-// Minimal service card entrance
 const serviceCardVariants = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
@@ -93,7 +111,6 @@ const serviceCardVariants = {
   })
 };
 
-// Pricing cards - smoother entrance without 3D
 const priceCardVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: (i: number) => ({
@@ -137,7 +154,7 @@ export default function Offerings() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    setToast("✅ Order request sent successfully!");
+    setToast("Order request sent successfully!");
     setTimeout(() => {
       setOrder(null);
       setToast(null);
@@ -169,7 +186,10 @@ export default function Offerings() {
           <Link to="/" className="logo">
             Bishant<span className="gradient-text">.RB</span>
           </Link>
-          <Link to="/" className="back-link">← Back to Home</Link>
+          <Link to="/" className="back-link" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <MdArrowBack size={18} />
+            Back to Home
+          </Link>
         </nav>
       </motion.header>
 
@@ -226,8 +246,10 @@ export default function Offerings() {
                 <motion.span
                   className="arrow"
                   whileHover={{ x: 4, transition: { duration: 0.15 } }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
                 >
-                  View Pricing →
+                  View Pricing
+                  <MdArrowForward size={16} />
                 </motion.span>
               </motion.div>
             );
@@ -252,9 +274,14 @@ export default function Offerings() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, flexWrap: "wrap" }}
             >
               {service ? (
-                <>{service.icon} {service.name} <span className="gradient-text">Packages</span></>
+                <>
+                  <span style={{ display: "inline-flex", alignItems: "center", color: "#a855f7" }}>{service.icon}</span>
+                  {service.name}&nbsp;
+                  <span className="gradient-text">Packages</span>
+                </>
               ) : (
                 "Select a service to view pricing"
               )}
@@ -288,8 +315,9 @@ export default function Offerings() {
               className="big-emoji"
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              style={{ display: "flex", justifyContent: "center", color: "#a855f7" }}
             >
-              🎬
+              <MdMovie size={64} />
             </motion.div>
             <p>Select a service above to view its custom pricing tiers (Basic / Standard / Premium).</p>
           </motion.div>
@@ -320,7 +348,12 @@ export default function Offerings() {
                     }}
                     style={{ opacity: 1, transform: "none", animation: "none" }}
                   >
-                    {t.recommended && <div className="badge-top">⭐ Most Popular</div>}
+                    {t.recommended && (
+                      <div className="badge-top" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        <MdStar size={16} />
+                        Most Popular
+                      </div>
+                    )}
                     <div className="tier-name">{t.label}</div>
                     <div className="tier-desc">{t.desc}</div>
                     <motion.div
@@ -338,7 +371,12 @@ export default function Offerings() {
                       <div><strong>{t.revisions}</strong><span>Revisions</span></div>
                     </div>
                     <ul className="tier-features">
-                      {t.features.map((f, j) => <li key={j}>{f}</li>)}
+                      {t.features.map((f, j) => (
+                        <li key={j} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                          <MdCheck size={18} style={{ color: "#a855f7", flexShrink: 0, marginTop: 2 }} />
+                          <span>{f}</span>
+                        </li>
+                      ))}
                     </ul>
                     <motion.button
                       className="order-btn"
@@ -373,12 +411,23 @@ export default function Offerings() {
               exit={{ scale: 0.9, y: 30, opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              <button className="modal-close" onClick={() => setOrder(null)}>✕</button>
+              <button
+                className="modal-close"
+                onClick={() => setOrder(null)}
+                style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+              >
+                <MdClose size={20} />
+              </button>
               {!submitted ? (
                 <>
                   <h3>Complete Your Order</h3>
                   <div className="modal-summary">
-                    <h4>{servicesData[order.serviceKey].icon} {servicesData[order.serviceKey].name}</h4>
+                    <h4 style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ display: "inline-flex", color: "#a855f7" }}>
+                        {servicesData[order.serviceKey].icon}
+                      </span>
+                      {servicesData[order.serviceKey].name}
+                    </h4>
                     <div className="pkg-name">{servicesData[order.serviceKey].tiers[order.tierKey].label} Package</div>
                     <div className="pkg-price">
                       {formatPrice(servicesData[order.serviceKey].tiers[order.tierKey][pricingMode])}
@@ -403,6 +452,19 @@ export default function Offerings() {
                       className="modal-submit"
                       whileHover={{ scale: 1.02, transition: { duration: 0.15 } }}
                       whileTap={{ scale: 0.97 }}
+                      style={{
+                        width: "100%",
+                        padding: "14px 24px",
+                        marginTop: "8px",
+                        background: "linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "10px",
+                        fontSize: "15px",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        boxShadow: "0 10px 30px rgba(168,85,247,0.35)",
+                      }}
                     >
                       Confirm Order — {formatPrice(servicesData[order.serviceKey].tiers[order.tierKey][pricingMode])}
                     </motion.button>
@@ -420,11 +482,12 @@ export default function Offerings() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 }}
+                    style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                   >
-                    ✓
+                    <MdCheck size={48} />
                   </motion.div>
                   <h3>Thank you, {form.name.split(" ")[0] || "there"}!</h3>
-                  <p>Your order request has been received. I'll reach out within 24 hours. 🎉</p>
+                  <p>Your order request has been received. I'll reach out within 24 hours.</p>
                 </motion.div>
               )}
             </motion.div>
@@ -440,7 +503,9 @@ export default function Offerings() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.25 }}
+            style={{ display: "flex", alignItems: "center", gap: 8 }}
           >
+            <MdCheck size={20} style={{ color: "#22c55e" }} />
             {toast}
           </motion.div>
         )}

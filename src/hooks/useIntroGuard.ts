@@ -1,54 +1,50 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
-const CHANNEL_NAME = "bishant-intro-guard";
-const STORAGE_KEY = "bishant-intro-seen";
+const INTRO_KEY = "welcome-intro-shown";
+const SESSION_ALIVE_KEY = "browser-session-alive";
 
 export function useIntroGuard() {
   const [shouldShowIntro, setShouldShowIntro] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const alreadySeen = localStorage.getItem(STORAGE_KEY) === "true";
+    const sessionAlive = sessionStorage.getItem(SESSION_ALIVE_KEY);
+    const introShown = localStorage.getItem(INTRO_KEY);
 
-    if (!alreadySeen) {
-      setShouldShowIntro(true);
-      localStorage.setItem(STORAGE_KEY, "true");
-      return;
+    if (!sessionAlive) {
+      // Browser was fully closed OR this is a brand new tab
+      // Check if any other tab has the session flag by looking at localStorage timestamp
+      const lastActive = localStorage.getItem("last-active-timestamp");
+      const now = Date.now();
+
+      // If no recent activity (5 sec gap = browser was closed), reset intro
+      if (!lastActive || now - parseInt(lastActive) > 5000) {
+        localStorage.removeItem(INTRO_KEY);
+        setShouldShowIntro(true);
+      } else {
+        // Another tab is/was recently open → same browser session
+        setShouldShowIntro(introShown !== "true");
+      }
+
+      sessionStorage.setItem(SESSION_ALIVE_KEY, "true");
+    } else {
+      // Same tab, already been here
+      setShouldShowIntro(introShown !== "true");
     }
 
-    const channel = new BroadcastChannel(CHANNEL_NAME);
-    let respondedByOtherTab = false;
+    // Heartbeat: update timestamp every 2s while tab is open
+    const heartbeat = setInterval(() => {
+      localStorage.setItem("last-active-timestamp", Date.now().toString());
+    }, 2000);
 
-    channel.postMessage("ping");
+    localStorage.setItem("last-active-timestamp", Date.now().toString());
 
-    const handleMessage = (e: MessageEvent) => {
-      if (e.data === "pong") {
-        respondedByOtherTab = true;
-      }
-      if (e.data === "ping") {
-        channel.postMessage("pong");
-      }
-    };
-
-    channel.addEventListener("message", handleMessage);
-
-    const timer = setTimeout(() => {
-      if (respondedByOtherTab) {
-        setShouldShowIntro(false);
-      } else {
-        setShouldShowIntro(true);
-      }
-    }, 200);
-
-    return () => {
-      clearTimeout(timer);
-      channel.removeEventListener("message", handleMessage);
-      channel.close();
-    };
+    return () => clearInterval(heartbeat);
   }, []);
 
-  const markIntroComplete = () => {
+  const markIntroComplete = useCallback(() => {
+    localStorage.setItem(INTRO_KEY, "true");
     setShouldShowIntro(false);
-  };
+  }, []);
 
   return { shouldShowIntro, markIntroComplete };
 }

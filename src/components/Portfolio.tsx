@@ -121,16 +121,39 @@ export default function Portfolio() {
   );
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#050308] text-white">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0b0512] via-[#07040c] to-black" />
-      <div className="pointer-events-none absolute -left-32 -top-32 h-[36rem] w-[36rem] rounded-full bg-purple-700/25 blur-[130px]" />
-      <div className="pointer-events-none absolute right-[-10rem] top-1/4 h-[30rem] w-[30rem] rounded-full bg-fuchsia-600/15 blur-[130px]" />
-      <div className="pointer-events-none absolute bottom-[-8rem] right-0 h-[34rem] w-[34rem] rounded-full bg-cyan-500/15 blur-[140px]" />
-      <div className="pointer-events-none absolute bottom-0 left-1/4 h-[24rem] w-[24rem] rounded-full bg-blue-600/10 blur-[130px]" />
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+      {/* Flowing gradient background (matches Hero) */}
+      <div className="pointer-events-none absolute inset-0">
+        <motion.div
+          className="absolute -top-32 -left-32 h-[36rem] w-[36rem] rounded-full bg-violet-600/30 blur-3xl"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.8, 1, 0.8] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/4 -right-40 h-[32rem] w-[32rem] rounded-full bg-fuchsia-500/20 blur-3xl"
+          animate={{ scale: [1.1, 0.95, 1.1], opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-0 left-1/4 h-[28rem] w-[28rem] rounded-full bg-violet-500/20 blur-3xl"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.75, 0.95, 0.75] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-1/3 right-1/4 h-[24rem] w-[24rem] rounded-full bg-purple-600/15 blur-3xl"
+          animate={{ scale: [1.05, 0.95, 1.05], opacity: [0.6, 0.85, 0.6] }}
+          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {/* Grid overlay (matches Hero) */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:44px_44px]" />
+      </div>
 
       <header className="relative z-10 border-b border-white/10 bg-black/40 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 sm:px-10">
-          <a href="/" className="font-display text-lg font-semibold tracking-tight text-white">
+          <a
+            href="/"
+            className="font-display text-lg font-semibold tracking-tight text-white"
+          >
             Bishant<span className="text-violet-400">.</span> RB
           </a>
           <a
@@ -142,7 +165,7 @@ export default function Portfolio() {
         </div>
       </header>
 
-      <div id="top" className="relative mx-auto max-w-7xl px-6 py-20 sm:px-10">
+      <div id="top" className="relative z-10 mx-auto max-w-7xl px-6 py-20 sm:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -154,9 +177,14 @@ export default function Portfolio() {
           </span>
           <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
             Before &amp;{" "}
-            <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
+            <motion.span
+              className="inline-block bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent"
+              style={{ backgroundSize: "200% auto" }}
+              animate={{ backgroundPosition: ["0% center", "200% center"] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+            >
               After
-            </span>{" "}
+            </motion.span>{" "}
             Work
           </h1>
           <p className="mt-4 text-base leading-relaxed text-white/60 sm:text-lg">
@@ -183,7 +211,7 @@ export default function Portfolio() {
                 {isActive && (
                   <motion.span
                     layoutId="category-pill"
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-600/80 to-cyan-600/80 shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 shadow-[0_0_20px_rgba(168,85,247,0.5)]"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -206,7 +234,8 @@ export default function Portfolio() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.5, ease: "easeOut", delay: i * 0.06 }}
-                className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-4 shadow-2xl shadow-black/40 backdrop-blur-xl transition-colors hover:border-violet-400/30 sm:p-5"
+                whileHover={{ y: -6 }}
+                className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-4 shadow-2xl shadow-black/40 backdrop-blur-xl transition-colors hover:border-violet-400/40 hover:shadow-violet-900/30 sm:p-5"
               >
                 <div className="mb-3 flex items-center justify-between px-1">
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-white/50">
@@ -244,15 +273,25 @@ export default function Portfolio() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
-          className="mt-24 flex flex-col items-center justify-between gap-6 rounded-[2rem] border border-white/10 bg-gradient-to-r from-violet-600/10 via-fuchsia-600/10 to-cyan-600/10 p-10 text-center backdrop-blur-xl sm:flex-row sm:text-left"
+          className="mt-24 flex flex-col items-center justify-between gap-6 rounded-[2rem] border border-violet-400/20 bg-gradient-to-r from-violet-600/15 via-fuchsia-600/15 to-violet-600/15 p-10 text-center backdrop-blur-xl sm:flex-row sm:text-left"
         >
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-white">Got a project in mind?</h2>
-            <p className="mt-1 text-white/60">More case studies are added regularly — let's create the next transformation together.</p>
+            <h2 className="text-2xl font-bold tracking-tight text-white">
+              Got a project in mind?
+            </h2>
+            <p className="mt-1 text-white/60">
+              More case studies are added regularly — let's create the next transformation together.
+            </p>
           </div>
-          <a href="/#contact" className="shrink-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 transition-transform hover:scale-105">
+          <motion.a
+            href="/#contact"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="shrink-0 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-900/40"
+          >
             Start a Project →
-          </a>
+          </motion.a>
         </motion.div>
 
         <motion.footer

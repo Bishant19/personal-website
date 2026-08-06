@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useState, useEffect } from "react";
 
 export default function Services() {
@@ -40,7 +40,6 @@ export default function Services() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Detect mobile viewport
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -62,80 +61,87 @@ export default function Services() {
     }
   };
 
+  const fadeUp: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
+  const container: Variants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
   return (
-    <section
-      id="Services"
-      className="py-28 px-6 bg-slate-950 text-white"
-    >
+    <section id="Services" className="py-28 px-6 bg-slate-950 text-white">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-20">
 
         {/* LEFT SIDE */}
-        <div>
-          <p className="text-sm text-purple-400 mb-4 tracking-widest">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+        >
+          <motion.p
+            variants={fadeUp}
+            className="text-sm text-purple-400 mb-4 tracking-widest"
+          >
             SERVICES / MY EXPERTISE
-          </p>
+          </motion.p>
 
-          <h2 className="text-5xl md:text-6xl font-semibold leading-tight mb-8">
+          <motion.h2
+            variants={fadeUp}
+            className="text-5xl md:text-6xl font-semibold leading-tight mb-8"
+          >
             Choose what matters to your{" "}
-            <span className="text-purple-500 italic">
-              Business
-            </span>
-          </h2>
+            <span className="text-purple-500 italic">Business</span>
+          </motion.h2>
 
-          {/* GLOWING ANIMATED BUTTON */}
-          <a href="/offerings" target="_blank" rel="noopener noreferrer">
-            <motion.div
-              className="relative inline-block cursor-pointer"
-              onHoverStart={() => setIsHovered(true)}
-              onHoverEnd={() => setIsHovered(false)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
-            >
+          <motion.div variants={fadeUp}>
+            <a href="/offerings" target="_blank" rel="noopener noreferrer">
               <motion.div
-                className="absolute -inset-3 rounded-full opacity-50"
-                style={{
-                  background:
-                    "radial-gradient(circle, rgba(168,85,247,0.6) 0%, rgba(236,72,153,0.3) 40%, transparent 70%)",
-                  filter: "blur(15px)",
-                }}
-                animate={{
-                  scale: [1, 1.15, 1],
-                  opacity: [0.4, 0.7, 0.4],
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-
-              <motion.div
-                className="absolute -inset-1.5 rounded-full"
-                style={{
-                  background:
-                    "linear-gradient(90deg, #a855f7, #ec4899, #8b5cf6, #a855f7)",
-                  backgroundSize: "300% 100%",
-                  filter: "blur(8px)",
-                  opacity: 0.6,
-                }}
-                animate={{
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              />
-
-              <div className="relative rounded-full p-[1.5px] overflow-hidden">
+                className="relative inline-block cursor-pointer"
+                onHoverStart={() => setIsHovered(true)}
+                onHoverEnd={() => setIsHovered(false)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 400, damping: 15 }}
+              >
                 <motion.div
-                  className="absolute inset-0"
+                  className="absolute -inset-3 rounded-full opacity-50"
                   style={{
                     background:
-                      "linear-gradient(90deg, #a855f7, #ec4899, #d946ef, #8b5cf6, #a855f7)",
+                      "radial-gradient(circle, rgba(168,85,247,0.6) 0%, rgba(236,72,153,0.3) 40%, transparent 70%)",
+                    filter: "blur(15px)",
+                  }}
+                  animate={{
+                    scale: [1, 1.15, 1],
+                    opacity: [0.4, 0.7, 0.4],
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+
+                <motion.div
+                  className="absolute -inset-1.5 rounded-full"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #a855f7, #ec4899, #8b5cf6, #a855f7)",
                     backgroundSize: "300% 100%",
+                    filter: "blur(8px)",
+                    opacity: 0.6,
                   }}
                   animate={{
                     backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
@@ -147,70 +153,95 @@ export default function Services() {
                   }}
                 />
 
-                <div className="relative bg-slate-950 px-8 py-3 rounded-full overflow-hidden">
-                  <div
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      background:
-                        "radial-gradient(ellipse at center, rgba(168,85,247,0.15) 0%, transparent 70%)",
-                    }}
-                  />
-
+                <div className="relative rounded-full p-[1.5px] overflow-hidden">
                   <motion.div
-                    className="absolute inset-0 rounded-full"
+                    className="absolute inset-0"
                     style={{
                       background:
-                        "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)",
+                        "linear-gradient(90deg, #a855f7, #ec4899, #d946ef, #8b5cf6, #a855f7)",
+                      backgroundSize: "300% 100%",
                     }}
-                    initial={{ x: "-100%" }}
-                    animate={isHovered ? { x: "100%" } : { x: "-100%" }}
+                    animate={{
+                      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                    }}
                     transition={{
-                      duration: 0.8,
-                      ease: "easeInOut",
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
                     }}
                   />
 
-                  <div className="relative flex items-center gap-2 z-10">
-                    <span
-                      className="font-medium text-white"
+                  <div className="relative bg-slate-950 px-8 py-3 rounded-full overflow-hidden">
+                    <div
+                      className="absolute inset-0 rounded-full"
                       style={{
-                        textShadow:
-                          "0 0 8px rgba(216,180,254,0.8), 0 0 16px rgba(168,85,247,0.5)",
+                        background:
+                          "radial-gradient(ellipse at center, rgba(168,85,247,0.15) 0%, transparent 70%)",
                       }}
-                    >
-                      Learn More
-                    </span>
-                    <motion.span
-                      animate={isHovered ? { x: 4 } : { x: 0 }}
-                      transition={{ type: "spring", stiffness: 300 }}
+                    />
+
+                    <motion.div
+                      className="absolute inset-0 rounded-full"
                       style={{
-                        color: "#e9d5ff",
-                        textShadow:
-                          "0 0 8px rgba(216,180,254,0.9), 0 0 16px rgba(168,85,247,0.6)",
+                        background:
+                          "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)",
                       }}
-                    >
-                      →
-                    </motion.span>
+                      initial={{ x: "-100%" }}
+                      animate={isHovered ? { x: "100%" } : { x: "-100%" }}
+                      transition={{
+                        duration: 0.8,
+                        ease: "easeInOut",
+                      }}
+                    />
+
+                    <div className="relative flex items-center gap-2 z-10">
+                      <span
+                        className="font-medium text-white"
+                        style={{
+                          textShadow:
+                            "0 0 8px rgba(216,180,254,0.8), 0 0 16px rgba(168,85,247,0.5)",
+                        }}
+                      >
+                        Learn More
+                      </span>
+                      <motion.span
+                        animate={isHovered ? { x: 4 } : { x: 0 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        style={{
+                          color: "#e9d5ff",
+                          textShadow:
+                            "0 0 8px rgba(216,180,254,0.9), 0 0 16px rgba(168,85,247,0.6)",
+                        }}
+                      >
+                        →
+                      </motion.span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          </a>
-        </div>
+              </motion.div>
+            </a>
+          </motion.div>
+        </motion.div>
 
         {/* RIGHT SIDE - INTERACTIVE SERVICES */}
-        <div className="space-y-2">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          className="space-y-2"
+        >
           {services.map((service, index) => {
             const isActive = activeIndex === index;
 
             return (
-              <div
+              <motion.div
                 key={index}
+                variants={fadeUp}
                 className="relative"
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
               >
-                {/* FLOWING GRADIENT BORDER WRAPPER */}
                 <motion.div
                   animate={{
                     padding: isActive ? "1.5px" : "0px",
@@ -218,7 +249,6 @@ export default function Services() {
                   transition={{ duration: 0.3 }}
                   className="relative rounded-xl overflow-hidden"
                 >
-                  {/* Animated Gradient Border */}
                   <AnimatePresence>
                     {isActive && (
                       <motion.div
@@ -253,7 +283,6 @@ export default function Services() {
                     )}
                   </AnimatePresence>
 
-                  {/* CARD CONTENT */}
                   <motion.div
                     animate={{
                       backgroundColor: isActive
@@ -266,7 +295,6 @@ export default function Services() {
                     transition={{ duration: 0.4 }}
                     className="relative border-b rounded-xl overflow-hidden"
                   >
-                    {/* FLOWING INNER GLOW */}
                     <AnimatePresence>
                       {isActive && (
                         <motion.div
@@ -297,7 +325,6 @@ export default function Services() {
                       )}
                     </AnimatePresence>
 
-                    {/* TITLE ROW */}
                     <div
                       className="relative flex justify-between items-center py-6 px-4 cursor-pointer z-10"
                       onClick={() => handleClick(index)}
@@ -317,7 +344,6 @@ export default function Services() {
                         </motion.span>
                       </div>
 
-                      {/* ANIMATED ARROW BUTTON */}
                       <motion.div
                         animate={{
                           borderColor: isActive
@@ -350,7 +376,6 @@ export default function Services() {
                       </motion.div>
                     </div>
 
-                    {/* EXPANDABLE DESCRIPTION */}
                     <AnimatePresence initial={false}>
                       {isActive && (
                         <motion.div
@@ -377,10 +402,10 @@ export default function Services() {
                     </AnimatePresence>
                   </motion.div>
                 </motion.div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
       </div>
     </section>

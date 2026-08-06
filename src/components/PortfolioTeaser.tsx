@@ -28,19 +28,28 @@ export default function PortfolioTeaser() {
             <span className="inline-flex items-center gap-2 rounded-full border border-violet-400/30 bg-violet-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-violet-300">
               Portfolio
             </span>
-            <h2 className="mt-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">Want to see my portfolio?</h2>
+            <h2 className="mt-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Want to see my portfolio?
+            </h2>
             <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg">
               Explore before &amp; after transformations across multimedia, design, and creative direction — see the craft up close.
             </p>
 
-            <Link
-              to="/portfolio"
-              onClick={() => window.scrollTo(0, 0)}
-              className="group mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/50 transition-transform hover:scale-105"
+            <motion.div
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="mt-8 inline-block"
             >
-              Click here
-              <span className="transition-transform group-hover:translate-x-1">→</span>
-            </Link>
+              <Link
+                to="/portfolio"
+                onClick={() => window.scrollTo(0, 0)}
+                className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/50"
+              >
+                Click here
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </Link>
+            </motion.div>
           </div>
         </motion.div>
       </div>
