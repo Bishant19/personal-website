@@ -7,6 +7,22 @@
     <title>Bishant Rajbhandari — Multimedia Artist & Video Editor</title>
   </head>
   <body>
+    <!-- Hidden forms for Netlify Forms detection -->
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+    </form>
+
+    <form name="order" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="service" />
+      <input type="text" name="package" />
+      <input type="text" name="price" />
+      <textarea name="details"></textarea>
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

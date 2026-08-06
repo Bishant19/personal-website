@@ -151,14 +151,42 @@ export default function Offerings() {
     setForm({ name: "", email: "", details: "" });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setToast("Order request sent successfully!");
-    setTimeout(() => {
-      setOrder(null);
-      setToast(null);
-    }, 2500);
+    if (!order) return;
+
+    const serviceName = servicesData[order.serviceKey].name;
+    const tierName = servicesData[order.serviceKey].tiers[order.tierKey].label;
+    const price = formatPrice(
+      servicesData[order.serviceKey].tiers[order.tierKey][pricingMode]
+    );
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append("form-name", "order");
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("service", serviceName);
+      formData.append("package", tierName);
+      formData.append("price", `${price} / ${pricingMode === "monthly" ? "month" : "project"}`);
+      formData.append("details", form.details);
+
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
+      });
+
+      setSubmitted(true);
+      setToast("Order request sent successfully!");
+      setTimeout(() => {
+        setOrder(null);
+        setToast(null);
+      }, 2500);
+    } catch (error) {
+      setToast("Failed to send. Please try again.");
+      setTimeout(() => setToast(null), 3000);
+    }
   };
 
   useEffect(() => {
@@ -184,7 +212,7 @@ export default function Offerings() {
       >
         <nav>
           <Link to="/" className="logo">
-            Bishant<span className="gradient-text">.RB</span>
+            Bishant<span style={{ color: "#a855f7" }}>.</span> RB
           </Link>
           <Link to="/" className="back-link" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             <MdArrowBack size={18} />
@@ -434,37 +462,38 @@ export default function Offerings() {
                       <span> / {pricingMode === "monthly" ? "month" : "project"}</span>
                     </div>
                   </div>
-                  <form onSubmit={handleSubmit}>
+                  <form
+                    onSubmit={handleSubmit}
+                    name="order"
+                    method="POST"
+                    data-netlify="true"
+                    netlify-honeypot="bot-field"
+                  >
+                    {/* Hidden Netlify fields */}
+                    <input type="hidden" name="form-name" value="order" />
+                    <p hidden>
+                      <label>
+                        Don't fill this out: <input name="bot-field" />
+                      </label>
+                    </p>
+
                     <div className="form-group">
                       <label>Full Name</label>
-                      <input type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="John Doe" />
+                      <input type="text" name="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="John Doe" />
                     </div>
                     <div className="form-group">
                       <label>Email Address</label>
-                      <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="john@example.com" />
+                      <input type="email" name="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="john@example.com" />
                     </div>
                     <div className="form-group">
                       <label>Project Details</label>
-                      <textarea rows={4} required value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} placeholder="Tell me about your project..."></textarea>
+                      <textarea rows={4} name="details" required value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} placeholder="Tell me about your project..."></textarea>
                     </div>
                     <motion.button
                       type="submit"
                       className="modal-submit"
                       whileHover={{ scale: 1.02, transition: { duration: 0.15 } }}
                       whileTap={{ scale: 0.97 }}
-                      style={{
-                        width: "100%",
-                        padding: "14px 24px",
-                        marginTop: "8px",
-                        background: "linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%)",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "10px",
-                        fontSize: "15px",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        boxShadow: "0 10px 30px rgba(168,85,247,0.35)",
-                      }}
                     >
                       Confirm Order — {formatPrice(servicesData[order.serviceKey].tiers[order.tierKey][pricingMode])}
                     </motion.button>

@@ -34,12 +34,29 @@ export default function Contact() {
   const [status, setStatus] = useState<"idle" | "sent">("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) return;
-    setStatus("sent");
-    setForm({ name: "", email: "", message: "" });
-    setTimeout(() => setStatus("idle"), 4000);
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append("form-name", "contact");
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("message", form.message);
+
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
+      });
+
+      setStatus("sent");
+      setForm({ name: "", email: "", message: "" });
+      setTimeout(() => setStatus("idle"), 4000);
+    } catch (error) {
+      console.error("Submit failed:", error);
+    }
   };
 
   return (
@@ -119,12 +136,24 @@ export default function Contact() {
           {/* RIGHT — form */}
           <motion.form
             onSubmit={handleSubmit}
+            name="contact"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
             variants={fadeRight}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-80px" }}
             className="space-y-5 rounded-2xl border border-white/10 bg-white/[0.03] p-8"
           >
+            {/* Hidden Netlify fields */}
+            <input type="hidden" name="form-name" value="contact" />
+            <p hidden>
+              <label>
+                Don't fill this out: <input name="bot-field" />
+              </label>
+            </p>
+
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-300">
                 Name
@@ -134,6 +163,7 @@ export default function Contact() {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 type="text"
+                name="name"
                 placeholder="Your name"
                 className="w-full rounded-lg border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-colors focus:border-violet-500"
               />
@@ -147,6 +177,7 @@ export default function Contact() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 type="email"
+                name="email"
                 placeholder="you@example.com"
                 className="w-full rounded-lg border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-colors focus:border-violet-500"
               />
@@ -160,6 +191,7 @@ export default function Contact() {
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 rows={5}
+                name="message"
                 placeholder="Tell me about your project..."
                 className="w-full resize-none rounded-lg border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-colors focus:border-violet-500"
               />
