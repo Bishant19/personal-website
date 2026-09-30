@@ -24,7 +24,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center overflow-hidden bg-slate-950 pt-24"
+      className="relative flex items-start overflow-hidden bg-slate-950 pt-20 pb-8"
     >
       {/* Background decor */}
       <div className="pointer-events-none absolute inset-0">
@@ -41,7 +41,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:44px_44px]" />
       </div>
 
-      <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 px-6 py-16 md:grid-cols-[1.2fr_1fr]">
+      <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 px-6 py-10 md:grid-cols-[1.2fr_1fr]">
         {/* LEFT — text */}
         <motion.div variants={container} initial="hidden" animate="show">
           <motion.p

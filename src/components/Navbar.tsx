@@ -16,20 +16,22 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
-    window.addEventListener("scroll", onScroll);
+    onScroll(); // sync immediately (handles page load with a #hash)
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
         scrolled
-          ? "bg-slate-950/80 backdrop-blur-lg shadow-lg shadow-black/20"
-          : "bg-transparent"
+          ? "border-b border-white/10 bg-[#0a0714]/75 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent"
       )}
     >
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      {/* Compact bar: py-3 instead of py-4 → ~60px tall instead of ~90px */}
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <a href="#home" className="font-display text-lg font-semibold tracking-tight text-white">
           Bishant<span className="text-violet-400">.</span> RB
         </a>
@@ -54,10 +56,10 @@ export default function Navbar() {
 
         <button
           onClick={() => setOpen(!open)}
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-white md:hidden"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-white md:hidden"
           aria-label="Toggle menu"
         >
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             {open ? (
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             ) : (
@@ -68,7 +70,7 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="border-t border-white/10 bg-slate-950/95 px-6 py-4 backdrop-blur-lg md:hidden">
+        <div className="border-t border-white/10 bg-[#0a0714]/95 px-6 py-4 backdrop-blur-xl md:hidden">
           <div className="flex flex-col gap-4">
             {links.map((link) => (
               <a
