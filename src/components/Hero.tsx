@@ -49,15 +49,10 @@ export default function Hero() {
             className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm font-medium text-violet-300"
           >
             <motion.span
-              className="h-2 w-2 rounded-full bg-emerald-400"
+              className="h-2 w-2 rounded-full bg-emerald-300"
               animate={{
                 scale: [1, 1.4, 1],
                 opacity: [1, 0.6, 1],
-                boxShadow: [
-                  "0 0 0 0 rgba(52,211,153,0.7)",
-                  "0 0 12px 4px rgba(52,211,153,0.55)",
-                  "0 0 0 0 rgba(52,211,153,0.7)",
-                ],
               }}
               transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
             />
