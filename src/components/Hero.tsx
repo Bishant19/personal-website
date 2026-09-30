@@ -50,7 +50,15 @@ export default function Hero() {
           >
             <motion.span
               className="h-2 w-2 rounded-full bg-emerald-400"
-              animate={{ scale: [1, 1.4, 1], opacity: [1, 0.6, 1] }}
+              animate={{
+                scale: [1, 1.4, 1],
+                opacity: [1, 0.6, 1],
+                boxShadow: [
+                  "0 0 0 0 rgba(52,211,153,0.7)",
+                  "0 0 12px 4px rgba(52,211,153,0.55)",
+                  "0 0 0 0 rgba(52,211,153,0.7)",
+                ],
+              }}
               transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
             />
             Available for new projects
@@ -90,18 +98,29 @@ export default function Hero() {
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
               href="#projects"
-              className="rounded-full bg-violet-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/30"
+              className="group relative overflow-hidden rounded-full bg-violet-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-shadow duration-300 hover:shadow-[0_0_24px_rgba(139,92,246,0.7)]"
             >
-              View my work
+              {/* light sweep */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -translate-x-[130%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[130%]"
+              />
+              <span className="relative">View my work</span>
             </motion.a>
+
             <motion.a
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
               href="#contact"
-              className="rounded-full border border-white/15 px-7 py-3 text-sm font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/5"
+              className="group relative overflow-hidden rounded-full border border-white/15 px-7 py-3 text-sm font-semibold text-white transition-all duration-300 hover:border-violet-400/70 hover:bg-white/5 hover:shadow-[0_0_16px_rgba(168,85,247,0.45)]"
             >
-              Get in touch
+              {/* light sweep */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -translate-x-[130%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[130%]"
+              />
+              <span className="relative">Get in touch</span>
             </motion.a>
           </motion.div>
 
