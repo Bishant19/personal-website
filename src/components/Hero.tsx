@@ -1,5 +1,5 @@
 import { socialLinks } from "../data/portfolio";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const container = {
   hidden: {},
@@ -20,7 +20,17 @@ const fadeUp = {
   },
 };
 
+/* The portrait dissolves into the page instead of ending on a hard cut.
+   Opaque to 55%, then fades to nothing by 97%. Lower the first stop
+   (e.g. 70%) if you want more of the body visible. */
+const DISSOLVE =
+  "linear-gradient(to bottom, #000 0%, #000 55%, rgba(0,0,0,0.72) 76%, rgba(0,0,0,0) 97%)";
+
 export default function Hero() {
+  const { scrollY } = useScroll();
+  // portrait drifts up slightly as you scroll — cheap depth, no library
+  const portraitY = useTransform(scrollY, [0, 600], [0, -60]);
+
   return (
     <section
       id="home"
@@ -79,7 +89,7 @@ export default function Hero() {
             variants={fadeUp}
             className="mt-6 max-w-xl text-lg leading-relaxed text-slate-400"
           >
-            I a'm a creative Multimedia Artist with inovative ideas &amp; a
+            I'm a creative Multimedia Artist with inovative ideas &amp; a
             passion for bringing brilliant contents that reaches and inspires
             people.
           </motion.p>
@@ -124,7 +134,7 @@ export default function Hero() {
             className="mt-12 flex items-center gap-6"
           >
             {[
-              { href: socialLinks.github, label: "GitHub" },
+              { href: socialLinks.instagram, label: "Instagram" },
               { href: socialLinks.linkedin, label: "LinkedIn" },
               { href: socialLinks.twitter, label: "Twitter" },
             ].map((s) => (
@@ -143,45 +153,97 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* RIGHT — image */}
+        {/* RIGHT — portrait */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-sm"
+          className="relative mx-auto w-full"
         >
+          {/* Ambient halo — now barely a whisper. Set both rgba alphas to 0
+              (or delete this block) to remove it entirely. */}
           <motion.div
-            className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-violet-500/40 to-fuchsia-500/40 blur-2xl"
-            animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.05, 1] }}
+            aria-hidden
+            className="pointer-events-none absolute -inset-3 blur-2xl"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 40%, rgba(139,92,246,0.05), rgba(217,70,239,0.02) 50%, rgba(0,0,0,0) 70%)",
+            }}
+            animate={{ opacity: [0.9, 1, 0.9], scale: [1, 1.03, 1] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           />
 
-          <motion.div
-            className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 shadow-2xl"
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <img
-              src="/images/New Avatar.jpg"
-              alt="Portrait of Bishant 19"
-              className="h-full w-full object-cover"
-            />
+          {/* scroll parallax — scroll-driven only, no idle movement.
+              The old `animate={{ y: [0, -8, 0] }}` float loop is gone. */}
+          <motion.div style={{ y: portraitY }} className="relative">
+            <div className="relative">
+              {/* Silhouette glow — a filter, so it follows the alpha channel and
+                  never draws a rectangle. Cut 0.42 → 0.16 → 0.10.
+                  Set filter to "none" to remove completely. */}
+              <div
+                className="relative"
+                style={{
+                  filter:
+                    "drop-shadow(0 16px 34px rgba(139,92,246,0.10)) drop-shadow(0 -4px 16px rgba(217,70,239,0.05))",
+                }}
+              >
+                <img
+                  src="/images/New%20PP%20Avatar.png"
+                  alt="Portrait of Bishant"
+                  className="h-auto w-full origin-bottom scale-[1.15]"
+                  style={{
+                    // grade it into the page's palette instead of leaving it
+                    // looking like a sticker pasted on top
+                    filter:
+                      "contrast(1.07) saturate(1.12) brightness(0.93)",
+                    WebkitMaskImage: DISSOLVE,
+                    maskImage: DISSOLVE,
+                  }}
+                />
+              </div>
+            </div>
           </motion.div>
 
+          {/* Stat badge — glass card with a gradient hairline border.
+              Position (-bottom-6 -left-6) and padding (px-5 py-4) are exactly
+              as you had them. No bounce, no harsh glow. */}
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.6, delay: 1.1, ease: "easeOut" }}
-            className="absolute -bottom-6 -left-6 rounded-2xl border border-white/10 bg-slate-900/90 px-5 py-4 shadow-xl backdrop-blur"
+            className="absolute -bottom-6 -left-6"
           >
-            <motion.p
-              className="text-2xl font-bold text-white"
-              animate={{ scale: [1, 1.06, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            >
-              6+
-            </motion.p>
-            <p className="text-xs font-medium text-slate-400">Years experience</p>
+            {/* whisper of light under the card — was 0.32, which read as a
+                harsh purple blob. 0.09 now; delete this div to remove. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -inset-3 rounded-[1.5rem] blur-lg"
+              style={{
+                background:
+                  "radial-gradient(circle at 35% 30%, rgba(139,92,246,0.09), rgba(217,70,239,0.03) 55%, transparent 76%)",
+              }}
+            />
+
+            {/* 1px gradient shell, card inset inside it = gradient hairline */}
+            <div className="relative rounded-2xl bg-gradient-to-br from-violet-400/70 via-white/15 to-fuchsia-400/60 p-px shadow-2xl">
+              <div className="relative rounded-[15px] bg-slate-900/85 px-5 py-4 backdrop-blur-xl">
+                <div className="flex items-center gap-3">
+                  {/* matches the pulsing dot in "Available for new projects" */}
+                  <span className="relative flex h-2 w-2 shrink-0">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400/75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-violet-400" />
+                  </span>
+                  <div>
+                    <p className="text-2xl font-bold leading-none text-white">
+                      6+
+                    </p>
+                    <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                      Years experience
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       </div>

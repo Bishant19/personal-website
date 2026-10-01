@@ -113,7 +113,7 @@ export default function Contact() {
 
             <motion.div variants={fadeUp} className="mt-10 flex gap-4">
               {[
-                { href: socialLinks.github, label: "GitHub" },
+                { href: socialLinks.instagram, label: "Instagram" },
                 { href: socialLinks.linkedin, label: "LinkedIn" },
                 { href: socialLinks.twitter, label: "Twitter" },
               ].map((s) => (

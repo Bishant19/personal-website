@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion, type Variants } from "framer-motion";
 import { cn } from "../utils/cn";
 
 const links = [
@@ -9,6 +10,45 @@ const links = [
   { href: "#experience", label: "Experience" },
   { href: "#portfolio-teaser", label: "Portfolio" },
 ];
+
+/* ------------------------------------------------------------------ *
+ * "Let's talk" — a beam of light sweeps across the pill on hover
+ * ------------------------------------------------------------------ */
+const ctaVariants: Variants = {
+  rest: { scale: 1 },
+  hover: { scale: 1.04, transition: { type: "spring", stiffness: 400, damping: 20 } },
+};
+
+const sweep = {
+  rest: { x: "0%", skewX: -45, opacity: 0, transition: { duration: 0 } },
+  hover: {
+    x: "450%",
+    skewX: -45,
+    opacity: 1,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
+function CtaButton() {
+  return (
+    <motion.a
+      href="#contact"
+      variants={ctaVariants}
+      initial="rest"
+      whileHover="hover"
+      animate="rest"
+      whileTap={{ scale: 0.97 }}
+      className="group relative overflow-hidden rounded-full bg-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-colors duration-300 hover:bg-violet-500 hover:shadow-[0_0_28px_-4px_rgba(139,92,246,0.75)]"
+    >
+      {/* light beam — sweeps left to right on hover */}
+      <motion.span
+        variants={sweep}
+        className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-gradient-to-r from-transparent via-white to-transparent"
+      />
+      Let&apos;s talk
+    </motion.a>
+  );
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -38,20 +78,17 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-8 md:flex">
           {links.map((link) => (
-            <a
+            <motion.a
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
+              whileHover={{ y: -2 }}
+              transition={{ type: "spring", stiffness: 500, damping: 12 }}
+              className="text-sm font-medium text-slate-300 transition-[color,filter] duration-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(167,139,250,0.6)]"
             >
               {link.label}
-            </a>
+            </motion.a>
           ))}
-          <a
-            href="#contact"
-            className="rounded-full bg-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-600/30 transition-transform hover:scale-105 hover:bg-violet-500"
-          >
-            Let's talk
-          </a>
+          <CtaButton />
         </div>
 
         <button
